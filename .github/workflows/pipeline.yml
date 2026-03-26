@@ -25,7 +25,7 @@ jobs:
       - name: Train model
         run: python train.py
         env:
-          MLFLOW_TRACKING_URI: ./mlruns
+          MLFLOW_TRACKING_URI: sqlite:///mlflow.db
 
       - name: Upload model info
         uses: actions/upload-artifact@v4
@@ -33,11 +33,11 @@ jobs:
           name: model-info
           path: model_info.txt
 
-      - name: Upload MLflow runs
+      - name: Upload MLflow database
         uses: actions/upload-artifact@v4
         with:
-          name: mlruns
-          path: mlruns
+          name: mlflow-db
+          path: mlflow.db
 
   deploy:
     name: Deploy Model
@@ -61,16 +61,15 @@ jobs:
         with:
           name: model-info
 
-      - name: Download MLflow runs
+      - name: Download MLflow database
         uses: actions/download-artifact@v4
         with:
-          name: mlruns
-          path: mlruns
+          name: mlflow-db
 
       - name: Check accuracy threshold
         run: python check_threshold.py
         env:
-          MLFLOW_TRACKING_URI: ./mlruns
+          MLFLOW_TRACKING_URI: sqlite:///mlflow.db
 
       - name: Mock Docker Build
         run: |
