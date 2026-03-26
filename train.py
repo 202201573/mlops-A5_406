@@ -1,7 +1,3 @@
-"""
-train.py – Train a classifier, log to MLflow, and export the Run ID.
-"""
-
 import os
 import mlflow
 import mlflow.sklearn
